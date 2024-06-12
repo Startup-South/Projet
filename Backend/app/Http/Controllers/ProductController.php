@@ -23,44 +23,38 @@ class ProductController extends Controller
     public function store(ProductStoreRequest $request)
     {
         try {
-            $productname = $request->productname;
-            $price = $request->price;
-            $description = $request->description;
-            $quantity = $request->quantity;
-            $is_available = $request->is_available;
-            $imageName = Str::random(32) . "." . $request->image->getClientOriginalExtension();
+            $imageName = Str::uuid() . "." . $request->file('image')->getClientOriginalExtension();
 
-            Storage::disk('public')->put($imageName, file_get_contents($request->image));
+            Storage::disk('public')->put($imageName, file_get_contents($request->file('image')));
 
             Product::create([
-                'productname' => $productname,
+                'productname' => $request->productname,
                 'image' => $imageName,
-                'price' => $price,
-                'description' => $description,
-                'quantity' => $quantity,
-                'is_available' => $is_available
+                'price' => $request->price,
+                'description' => $request->description,
+                'quantity' => $request->quantity,
+                'weight' => $request->weight,
+                'size' => $request->size,
+                'is_available' => $request->is_available
             ]);
 
             // Return JSON Response
             return response()->json([
-                'message' => "Product successfully created. '$productname' -- '$imageName' -- '$price'"
+                'message' => "Product successfully created."
             ], 200);
         } catch (\Exception $e) {
             // Return JSON Response
             return response()->json([
-                'message' => "Something went really wrong!"
+                'message' => "Something went really wrong!",
+                'error' => $e->getMessage(),
+                'trace' => $e->getTrace()
             ], 500);
         }
     }
 
     public function show($id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json([
-                'message' => 'Product Not Found.'
-            ], 404);
-        }
+        $product = Product::findOrFail($id);
 
         // Return JSON Response
         return response()->json([
@@ -72,17 +66,14 @@ class ProductController extends Controller
     {
         try {
             // Find product
-            $product = Product::find($id);
-            if (!$product) {
-                return response()->json([
-                    'message' => 'Product Not Found.'
-                ], 404);
-            }
+            $product = Product::findOrFail($id);
 
             $product->productname = $request->productname;
             $product->price = $request->price;
             $product->description = $request->description;
             $product->quantity = $request->quantity;
+            $product->weight = $request->weight;
+            $product->size = $request->size;
             $product->is_available = $request->is_available;
 
             if ($request->hasFile('image')) {
@@ -95,11 +86,11 @@ class ProductController extends Controller
                 }
 
                 // Image name
-                $imageName = Str::random(32) . "." . $request->image->getClientOriginalExtension();
+                $imageName = Str::uuid() . "." . $request->file('image')->getClientOriginalExtension();
                 $product->image = $imageName;
 
                 // Image save in public folder
-                $storage->put($imageName, file_get_contents($request->image));
+                $storage->put($imageName, file_get_contents($request->file('image')));
             }
 
             // Update Product
@@ -119,12 +110,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::find($id);
-        if (!$product) {
-            return response()->json([
-                'message' => 'Product Not Found.'
-            ], 404);
-        }
+        $product = Product::findOrFail($id);
 
         // Public storage
         $storage = Storage::disk('public');

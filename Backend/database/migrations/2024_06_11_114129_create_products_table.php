@@ -13,11 +13,13 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('productname'); // Correction de la faute de frappe
+            $table->string('productname'); // Correction de la faute de frappe et utilisation du snake_case
             $table->string('image')->nullable();
             $table->decimal('price', 10, 2); // Utilisation du type correct pour les prix
             $table->text('description'); // Utilisation du type text pour des descriptions longues
             $table->decimal('quantity', 10, 2);
+            $table->decimal('weight', 10, 2)->nullable(); // Ajout de la précision pour le poids
+            $table->decimal('size', 10, 2)->nullable(); // Ajout de la précision pour la taille
             $table->boolean('is_available'); // Utilisation du type boolean pour un champ booléen
             $table->timestamps();
         });
