@@ -18,5 +18,7 @@ class Product extends Model
         'weight',
         'size',
         'is_available',
+        'is_available',
+        
     ];
 }
