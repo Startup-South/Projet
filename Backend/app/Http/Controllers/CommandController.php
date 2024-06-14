@@ -90,7 +90,7 @@ class CommandController extends Controller
         $validator = Validator::make($request->all(), [
             'CommandDate' => 'sometimes|required|date',
             'PaymentStatus' => 'sometimes|required|string|max:255',
-            'CommandStatus' => 'sometimes|required|numeric',
+            'CommandStatus' => 'sometimes|required|string|max:255',
             'DeliveryMode' => 'sometimes|required|string|max:255',
             'Comment' => 'sometimes|required|string|max:255',
             'ClientId' => 'sometimes|required|integer|exists:clients,id',
