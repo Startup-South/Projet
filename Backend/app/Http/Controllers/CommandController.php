@@ -18,6 +18,7 @@ class CommandController extends Controller
         return response()->json($commands);
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
