@@ -1,130 +1,130 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Http\Requests\ProductStoreRequest;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    /**
+     * Display a listing of the products.
+     */
     public function index()
     {
-        $products = Product::paginate(5);
-
-        // Return JSON Response
-        return response()->json([
-            'products' => $products
-        ], 200);
+        $products = Product::all();
+        return response()->json($products, 200);
     }
 
-    public function store(ProductStoreRequest $request)
+    /**
+     * Store a newly created product in storage.
+     */
+    public function store(Request $request)
     {
-        try {
-            $imageName = Str::uuid() . "." . $request->file('image')->getClientOriginalExtension();
+        $validatedData = $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'product_status' => 'required|boolean',
+            'stock' => 'required|integer',
+            'market_price' => 'required|numeric',
+            'sale_channel' => 'nullable|string|max:255',
+            'product_description' => 'nullable|string',
+            'product_type' => 'required|string|max:255',
+            'product_pound' => 'nullable|numeric',
+            'product_city_origin' => 'required|string|max:255',
+            'code_sh' => 'required|string|max:255',
+            'product_price' => 'required|numeric',
+            'product_code' => 'required|string|max:255',
+            'product_shop' => 'required|string|max:255',
+            'product_options' => 'nullable|json',
+            'product_value' => 'nullable|numeric'
+        ]);
 
-            Storage::disk('public')->put($imageName, file_get_contents($request->file('image')));
-
-            Product::create([
-                'productname' => $request->productname,
-                'image' => $imageName,
-                'price' => $request->price,
-                'description' => $request->description,
-                'quantity' => $request->quantity,
-                'weight' => $request->weight,
-                'size' => $request->size,
-                'is_available' => $request->is_available
-            ]);
-
-            // Return JSON Response
-            return response()->json([
-                'message' => "Product successfully created."
-            ], 200);
-        } catch (\Exception $e) {
-            // Return JSON Response
-            return response()->json([
-                'message' => "Something went really wrong!",
-                'error' => $e->getMessage(),
-                'trace' => $e->getTrace()
-            ], 500);
+        if ($request->hasFile('product_img')) {
+            $image = $request->file('product_img');
+            $path = $image->store('product_images', 'public');
+            $validatedData['product_img'] = $path;
         }
+
+        $product = Product::create($validatedData);
+        return response()->json($product, 201);
     }
 
+    /**
+     * Display the specified product.
+     */
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
 
-        // Return JSON Response
-        return response()->json([
-            'product' => $product
-        ], 200);
-    }
-
-    public function update(ProductStoreRequest $request, $id)
-    {
-        try {
-            // Find product
-            $product = Product::findOrFail($id);
-
-            $product->productname = $request->productname;
-            $product->price = $request->price;
-            $product->description = $request->description;
-            $product->quantity = $request->quantity;
-            $product->weight = $request->weight;
-            $product->size = $request->size;
-            $product->is_available = $request->is_available;
-
-            if ($request->hasFile('image')) {
-                // Public storage
-                $storage = Storage::disk('public');
-
-                // Old image delete
-                if ($storage->exists($product->image)) {
-                    $storage->delete($product->image);
-                }
-
-                // Image name
-                $imageName = Str::uuid() . "." . $request->file('image')->getClientOriginalExtension();
-                $product->image = $imageName;
-
-                // Image save in public folder
-                $storage->put($imageName, file_get_contents($request->file('image')));
-            }
-
-            // Update Product
-            $product->save();
-
-            // Return JSON Response
-            return response()->json([
-                'message' => "Product successfully updated."
-            ], 200);
-        } catch (\Exception $e) {
-            // Return JSON Response
-            return response()->json([
-                'message' => "Something went really wrong!"
-            ], 500);
+        if (is_null($product)) {
+            return response()->json(['message' => 'Product not found'], 404);
         }
+
+        return response()->json($product, 200);
     }
 
+    /**
+     * Update the specified product in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        $product = Product::find($id);
+
+        if (is_null($product)) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_img' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'product_status' => 'required|boolean',
+            'stock' => 'required|integer',
+            'market_price' => 'required|numeric',
+            'sale_channel' => 'nullable|string|max:255',
+            'product_description' => 'nullable|string',
+            'product_type' => 'required|string|max:255',
+            'product_pound' => 'nullable|numeric',
+            'product_city_origin' => 'required|string|max:255',
+            'code_sh' => 'required|string|max:255',
+            'product_price' => 'required|numeric',
+            'product_code' => 'required|string|max:255',
+            'product_shop' => 'required|string|max:255',
+            'product_options' => 'nullable|json',
+            'product_value' => 'nullable|numeric'
+        ]);
+
+        if ($request->hasFile('product_img')) {
+            // Delete old image if exists
+            if ($product->product_img) {
+                Storage::disk('public')->delete($product->product_img);
+            }
+            $image = $request->file('product_img');
+            $path = $image->store('product_images', 'public');
+            $validatedData['product_img'] = $path;
+        }
+
+        $product->update($validatedData);
+        return response()->json($product, 200);
+    }
+
+    /**
+     * Remove the specified product from storage.
+     */
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
 
-        // Public storage
-        $storage = Storage::disk('public');
-
-        // Image delete
-        if ($storage->exists($product->image)) {
-            $storage->delete($product->image);
+        if (is_null($product)) {
+            return response()->json(['message' => 'Product not found'], 404);
         }
 
-        // Delete Product
-        $product->delete();
+        if ($product->product_img) {
+            Storage::disk('public')->delete($product->product_img);
+        }
 
-        // Return JSON Response
-        return response()->json([
-            'message' => "Product successfully deleted."
-        ], 200);
+        $product->delete();
+        return response()->json(['message' => 'Product deleted successfully'], 200);
     }
 }
