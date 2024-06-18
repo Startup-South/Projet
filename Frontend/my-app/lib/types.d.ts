@@ -1,4 +1,14 @@
-type ProductType = {
+type CollectionType = {
+    _id: string;
+    title: string;
+    description: string;
+    image: string;
+    products: ProductType[];
+}
+
+
+
+{/* type ProductType = {
     _id: string;
     title: string;
     description: string;
@@ -13,4 +23,4 @@ type ProductType = {
     createdAt: Date;
     updatedAt: Date;
 
-}
+}*/}
