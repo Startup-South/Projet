@@ -13,15 +13,23 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('productname'); // Correction de la faute de frappe et utilisation du snake_case
-            $table->string('image')->nullable();
-            $table->decimal('price', 10, 2); // Utilisation du type correct pour les prix
-            $table->text('description'); // Utilisation du type text pour des descriptions longues
-            $table->decimal('quantity', 10, 2);
-            $table->decimal('weight', 10, 2)->nullable(); // Ajout de la précision pour le poids
-            $table->decimal('size', 10, 2)->nullable(); // Ajout de la précision pour la taille
-            $table->boolean('is_available'); // Utilisation du type boolean pour un champ booléen
-            $table->timestamps();
+            $table->string('product_name'); // Nom du produit
+            $table->string('product_img')->nullable(); // Image du produit
+            $table->boolean('product_status'); // Statut du produit
+            $table->integer('stock'); // Stock du produit
+            $table->decimal('market_price', 8, 2); // Prix du marché
+            $table->string('sale_channel')->nullable(); // Canal de vente
+            $table->text('product_description')->nullable(); // Description du produit
+            $table->string('product_type'); // Type de produit
+            $table->decimal('product_pound', 8, 2)->nullable(); // Poids du produit
+            $table->string('product_city_origin'); // Ville d'origine du produit
+            $table->string('code_sh'); // Code SH
+            $table->decimal('product_price', 8, 2); // Prix du produit
+            $table->string('product_code'); // Code du produit
+            $table->string('product_shop'); // Boutique du produit
+            $table->string('product_options')->nullable(); // Options du produit
+            $table->decimal('product_value', 8, 2)->nullable(); // Valeur du produit
+            $table->timestamps(); // Horodatage
         });
     }
 
