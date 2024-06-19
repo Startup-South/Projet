@@ -39,3 +39,13 @@ Route::post('/commands', [CommandController::class, 'store']);       // Créer u
 Route::get('/commands/{id}', [CommandController::class, 'show']);    // Obtenir une facture spécifique
 Route::put('/commands/{id}', [CommandController::class, 'update']);  // Mettre à jour une facture spécifique
 Route::delete('/commands/{id}', [CommandController::class, 'destroy']); // Supprimer une facture spécifique
+
+Route::get('tarifs', [TarifController::class, 'index']);
+Route::post('tarifs', [TarifController::class, 'store']);
+Route::put('tarifsupdate/{id}', [TarifController::class, 'update']);
+Route::delete('tarifdelete/{id}', [TarifController::class, 'destroy']);
+
+Route::get('deliveries', [DeliveryController::class, 'index']);
+Route::post('deliveries', [DeliveryController::class, 'store']);
+Route::put('deliveriesupdate/{id}', [DeliveryController::class, 'update']);
+Route::delete('deliverydelete/{id}', [DeliveryController::class, 'destroy']);
