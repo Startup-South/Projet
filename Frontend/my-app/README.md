@@ -34,3 +34,10 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+
+
+
+// auth faran ambony io asianareo an le login sy registration de manao importation raha ilaina de fafana n Clerk raha mety
+// Miditra @.env koa av eo de mamafa cle Clerk de ts maints jerena aby izay clerk anatin an satria resaka authentification avao gnaz,ts mila mandray raha manintsy2 zao gn developpeur fa hainao ty tohiny haha
