@@ -20,7 +20,10 @@ class Blog extends Model
         'BlogDate',
         'BlogImg'
     ];
-
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'BlogAuthor');
+    }
     protected $casts = [
         'BlogVisibility' => 'boolean',
         'BlogDate' => 'datetime'

@@ -11,7 +11,10 @@ class Product extends Model
 
     protected $fillable = [
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> 4a631f7bbc8b230a6e795addd966c9c1bcbe413f
         'product_name', // Correspond au nom de la colonne dans la migration
         'product_img', // Correspond au nom de la colonne dans la migration
         'product_status', // Correspond au nom de la colonne dans la migration

@@ -17,7 +17,8 @@ class CreateBlogsTable extends Migration
             $table->id();
             $table->string('BlogTitle', 75);
             $table->text('BlogDescription');
-            $table->string('BlogAuthor', 60);
+            $table->unsignedBigInteger('BlogAuthor'); // Assurez-vous que le type correspond
+            $table->foreign('BlogAuthor')->references('EmployeeId')->on('employees')->onDelete('cascade'); // Ajout de onDelete('cascade') pour une suppression en cascade, si nécessaire
             $table->boolean('BlogVisibility');
             $table->date('BlogDate');
             $table->string('BlogImg');

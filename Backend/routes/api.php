@@ -7,6 +7,8 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BillController; // Ajout de cette ligne pour importer le BillController
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\EmployeeController;
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -42,12 +44,6 @@ Route::put('/commands/{id}', [CommandController::class, 'update']);  // Mettre �
 Route::delete('/commands/{id}', [CommandController::class, 'destroy']); // Supprimer une facture spécifique
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Group blog routes
-
 
 // Route to get all blogs
 Route::get('/blogs', [BlogController::class, 'index']);
@@ -63,5 +59,11 @@ Route::put('/blogs/{id}', [BlogController::class, 'update']);
 
 // Route to delete a specific blog by id
 Route::delete('/blogs/{id}', [BlogController::class, 'destroy']);
+
+Route::get('/employees', [EmployeeController::class, 'index']);        // Obtenir toutes les factures
+Route::post('/employees', [EmployeeController::class, 'store']);       // Créer une nouvelle facture
+Route::get('/employees/{id}', [EmployeeController::class, 'show']);    // Obtenir une facture spécifique
+Route::put('/employees/{id}', [EmployeeController::class, 'update']);  // Mettre à jour une facture spécifique
+Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']); // Supprimer une facture spécifique
 
 
