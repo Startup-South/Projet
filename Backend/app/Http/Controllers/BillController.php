@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Bill;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +18,7 @@ class BillController extends Controller
         return response()->json($bills);
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -24,7 +26,7 @@ class BillController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'BillCode' => 'required|string|max:255',
-            'TotalPrice' => 'required|numeric',
+            'TotalPrice' => '  ',
             'Article' => 'required|string|max:255',
             'DeliveryPrice' => 'required|numeric',
             'BillProduct' => 'required|string|max:255',

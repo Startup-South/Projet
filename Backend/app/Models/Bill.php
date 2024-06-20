@@ -10,7 +10,7 @@ class Bill extends Model
     use HasFactory;
 
     protected $fillable = [
-        'BillCode', // Assurez-vous que le nom de la colonne correspond à celui utilisé dans le contrôleur
+        'BillCode',
         'TotalPrice',
         'Article',
         'DeliveryPrice',
