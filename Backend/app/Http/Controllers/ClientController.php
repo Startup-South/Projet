@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client; // Assurez-vous d'importer le modèle Client
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Importez le façade Validator
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Client;
 
 class ClientController extends Controller
 {
@@ -14,8 +14,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients = Client::all();
-        return response()->json($clients);
+        //
     }
 
     /**
@@ -23,108 +22,73 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'Name' => 'required|string|max:255', // La clé doit être en minuscules
-        ]);
+      // Définir les règles de validation
+        $rules = [
+            'ClientFirstname' => 'required|string|max:255',
+            'ClientLastname' => 'required|string|max:255',
+            'date_naissance' => 'required|date',
+            'ClientPhone' => 'required|string|max:15',
+            'codePostale' => 'required|string|max:10',
+            'adresse_facturation' => 'required|string|max:255',
+            'adresse_livraison' => 'required|string|max:255',
+            'adresse_email' => 'required|email|unique:clients,adresse_email', // Unique sur la table clients
+            'password' => 'required|string|min:8', // Assurez-vous que le champ password_confirmation existe
+            'genre' => 'required|string|in:Homme,Femme,Autre,Préférer ne pas dire',
+            'Subscription' => 'nullable|boolean', // Peut être nul
+            'date_inscription' => 'required|date',
+        ];
+        // Valider les données de la requête
+        $validator = Validator::make($request->all(), $rules);
 
+        // Vérifier si la validation échoue
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation errors',
-                'errors' => $validator->errors(),
+                'errors' => $validator->errors()
             ], 422);
         }
-
-        try {
-            $client = Client::create($validator->validated());
-
-            return response()->json([
-                'message' => "Client successfully created.",
-                'client' => $client,
-            ], 201);
-        } catch (\Exception $e) {
-            \Log::error("Error creating client: " . $e->getMessage());
-
-            return response()->json([
-                'message' => "Something went really wrong!",
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        // Créer et sauvegarder un nouveau Client
+        $client = new Client();
+        $client->ClientFirstname = $request->ClientFirstname;
+        $client->ClientLastname = $request->ClientLastname;
+        $client->date_naissance = $request->date_naissance;
+        $client->ClientPhone = $request->ClientPhone;
+        $client->codePostale = $request->codePostale;
+        $client->adresse_facturation = $request->adresse_facturation;
+        $client->adresse_livraison = $request->adresse_livraison;
+        $client->adresse_email = $request->adresse_email;
+        $client->password = Hash::make($request->password); // Hasher le mot de passe
+        $client->genre = $request->genre;
+        $client->Subscription = $request->Subscription ?? false; // Définir une valeur par défaut
+        $client->date_inscription = $request->date_inscription;
+        $client->save();
+        // Retourner une réponse réussie
+        return response()->json([
+            'message' => 'Client créé avec succès!',
+            'client' => $client
+        ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $client = Client::find($id);
-        if ($client) {
-            return response()->json($client);
-        } else {
-            return response()->json(['message' => 'Client not found'], 404);
-        }
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-        $client = Client::find($id);
-
-        if (!$client) {
-            return response()->json(['message' => 'Client not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'Name' => 'sometimes|required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation errors',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        try {
-            $client->update($validator->validated());
-
-            return response()->json([
-                'message' => "Client successfully updated.",
-                'client' => $client,
-            ], 200);
-        } catch (\Exception $e) {
-            \Log::error("Error updating client: " . $e->getMessage());
-
-            return response()->json([
-                'message' => "Something went really wrong!",
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $client = Client::find($id);
-
-        if (!$client) {
-            return response()->json(['message' => 'Client not found'], 404);
-        }
-
-        try {
-            $client->delete();
-
-            return response()->json(['message' => 'Client successfully deleted'], 200);
-        } catch (\Exception $e) {
-            \Log::error("Error deleting client: " . $e->getMessage());
-
-            return response()->json([
-                'message' => "Something went really wrong!",
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        //
     }
 }
