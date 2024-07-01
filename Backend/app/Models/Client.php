@@ -11,17 +11,6 @@ class Client extends Model
 {
     use HasFactory;
 
-    protected $table = 'clients';
-
-    // Indiquer le type de la clé primaire
-        protected $keyType = 'int';
-
-     // Définir le nom de la clé primaire
-    protected $primaryKey = 'Id';
-
-    // Indique si les IDs sont auto-incrementés
-    public $incrementing = true;
-
     protected $fillable = [
         'ClientFirstname', // Assurez-vous que le nom de la colonne correspond à celui utilisé dans le contrôleur
         'ClientLastname',
